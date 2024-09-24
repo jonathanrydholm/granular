@@ -1,0 +1,22 @@
+{
+    "name": "@granular/test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "author": "",
+    "license": "ISC",
+    "scripts": {
+        "dev": "node ./scripts/dev.js"
+    },
+    "dependencies": {
+        "@granular/application": "1.0.0",
+        "@granular/restful": "1.0.0",
+        "@granular/logger": "1.0.0"
+    },
+    "devDependencies": {
+        "nodemon-webpack-plugin": "4.8.2",
+        "webpack": "^5.76.2",
+        "ts-loader": "9.5.1"
+    }
+}

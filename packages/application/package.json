@@ -1,0 +1,14 @@
+{
+    "name": "@granular/application",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/index.ts",
+    "author": "",
+    "license": "ISC",
+    "scripts": {
+        "build": "tsc -b"
+    },
+    "dependencies": {
+        "inversify": "6.0.2"
+    }
+}
