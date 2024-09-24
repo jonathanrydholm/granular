@@ -7,12 +7,10 @@ import {
     IResponseHandler,
     RestfulIdentifiers,
 } from '../../Types';
-import { ILogger, ILoggerFactory } from '@granular/logger';
+import { ILoggerFactory } from '@granular/logger';
 
 @injectable()
 export class RequestHandler implements IRequestHandler {
-    private logger: ILogger;
-
     constructor(
         @inject(RestfulIdentifiers.RESPONSE_HANDLER)
         private responseHandler: IResponseHandler,
@@ -21,16 +19,13 @@ export class RequestHandler implements IRequestHandler {
         @inject('ILoggerFactory') private loggerFactory: ILoggerFactory
     ) {}
 
-    setTraceId(traceId: string): void {
-        this.logger = this.loggerFactory(`Request ${traceId}`);
-    }
-
     async handle(
         req: Request,
         res: Response,
         endpoint: IEndpoint<unknown>
     ): Promise<void> {
-        this.logger.get().trace('Received request');
+        const logger = this.loggerFactory({ name: 'RequestHandler' });
+        logger.get().trace('Received request');
         try {
             const handledResponse = await endpoint.handle(req);
             await this.responseHandler.handle(handledResponse, res);

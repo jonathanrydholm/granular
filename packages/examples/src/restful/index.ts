@@ -7,7 +7,10 @@ import { GranularLogger } from '@granular/logger';
 new Application()
     .addFunctionality({
         Functionality: GranularLogger,
-        configuration: { level: 'trace' },
+        configuration: {
+            pino: { level: 'trace' },
+            identifier: 'Application',
+        },
     })
     .addFunctionality(
         { Functionality: GranularRestful, configuration: { port: 5000 } },

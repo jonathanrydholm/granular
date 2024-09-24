@@ -1,5 +1,5 @@
 {
-    "name": "@granular/test",
+    "name": "@granular/examples",
     "version": "1.0.0",
     "description": "",
     "main": "./dist/index.js",
@@ -7,9 +7,12 @@
     "author": "",
     "license": "ISC",
     "scripts": {
-        "dev": "node ./scripts/dev.js"
+        "dev": "node ./scripts/dev.js",
+        "watcher-example": "EXAMPLE=watcher node ./scripts/dev.js",
+        "restful-example": "EXAMPLE=restful node ./scripts/dev.js"
     },
     "dependencies": {
+        "@granular/watcher": "1.0.0",
         "@granular/application": "1.0.0",
         "@granular/restful": "1.0.0",
         "@granular/logger": "1.0.0"

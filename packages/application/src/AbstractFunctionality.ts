@@ -1,4 +1,4 @@
-import { Container } from 'inversify';
+import { Container } from './Container';
 import { IFunctionality } from './IFunctionality';
 import { IOverride } from './IOverride';
 

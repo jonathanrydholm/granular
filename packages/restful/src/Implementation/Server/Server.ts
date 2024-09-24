@@ -2,7 +2,6 @@ import * as cors from 'cors';
 import type { Express } from 'express';
 import * as express from 'express';
 import {
-    IRequestHandler,
     IRequestHandlerFactory,
     RestfulIdentifiers,
     type IEndpoint,
@@ -28,13 +27,13 @@ export class Server implements IServer {
         private endpoints: IEndpoint<unknown>[],
         @inject(RestfulIdentifiers.SERVER_CONFIGURATION)
         private serverConfiguration: IServerConfiguration,
-        @inject(RestfulIdentifiers.REQUEST_HANDLER)
-        private requestHandler: IRequestHandler,
         @inject('ILoggerFactory') loggerFactory: ILoggerFactory,
         @inject('IRequestHandlerFactory')
         private requestHandlerFactory: IRequestHandlerFactory
     ) {
-        this.logger = loggerFactory('GranularServer');
+        this.logger = loggerFactory({
+            name: 'GranularService',
+        });
         this.app = this.serverConfiguration.getExpress() || express();
     }
 
@@ -56,17 +55,21 @@ export class Server implements IServer {
             switch (endpoint.getType()) {
                 case 'get': {
                     this.app.get(endpoint.getRoute(), async (_req, _res) => {
-                        await this.requestHandlerFactory(
-                            'TODO_trace_id'
-                        ).handle(_req, _res, endpoint);
+                        await this.requestHandlerFactory().handle(
+                            _req,
+                            _res,
+                            endpoint
+                        );
                     });
                     break;
                 }
                 case 'post': {
                     this.app.post(endpoint.getRoute(), async (_req, _res) => {
-                        await this.requestHandlerFactory(
-                            'TODO_trace_id'
-                        ).handle(_req, _res, endpoint);
+                        await this.requestHandlerFactory().handle(
+                            _req,
+                            _res,
+                            endpoint
+                        );
                     });
                     break;
                 }

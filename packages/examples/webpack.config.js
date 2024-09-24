@@ -3,12 +3,12 @@ const path = require('path');
 const webpack = require('webpack');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 
-module.exports = (production) => ({
+module.exports = (production, entry) => ({
     context: __dirname,
     target: 'node',
     externalsPresets: { node: true },
     mode: production ? 'production' : 'development',
-    entry: './src/index.ts',
+    entry,
     performance: {
         hints: false,
     },

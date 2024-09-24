@@ -2,7 +2,21 @@
 const webpack = require('webpack');
 const webpackConfig = require('../webpack.config.js');
 
-const config = webpackConfig(false);
+const getEntryPoint = () => {
+    switch (process.env.EXAMPLE) {
+        case 'watcher': {
+            return './src/watcher/index.ts';
+        }
+        case 'restful': {
+            return './src/restful/index.ts';
+        }
+        default: {
+            return './src/index.ts';
+        }
+    }
+};
+
+const config = webpackConfig(false, getEntryPoint());
 
 webpack(config, (err, stats) => {
     if (err || stats.hasErrors()) {

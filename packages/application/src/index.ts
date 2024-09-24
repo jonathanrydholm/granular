@@ -21,3 +21,4 @@ export * from './IFunctionality';
 export * from './AbstractFunctionality';
 export * from './IFunctionalityDefinition';
 export * from './IOverride';
+export * from './Container';

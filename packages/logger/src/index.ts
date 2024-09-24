@@ -1,18 +1,22 @@
 import 'reflect-metadata';
 import {
     AbstractFunctionality,
+    Container,
     Factory,
     IOverride,
 } from '@granular/application';
-import { Container } from 'inversify';
-import Pino, { LoggerOptions } from 'pino';
-import { ILogger } from './Types';
+import Pino from 'pino';
+import {
+    ILogger,
+    IGlobalLoggerConfiguration,
+    ILoggerConfiguration,
+} from './Types';
 import { Logger } from './Implementation';
 
 export class GranularLogger extends AbstractFunctionality<
     null,
     null,
-    LoggerOptions
+    IGlobalLoggerConfiguration
 > {
     register(container: Container): void {
         container.bind<ILogger>('IMainLogger').to(Logger).inSingletonScope();
@@ -20,16 +24,14 @@ export class GranularLogger extends AbstractFunctionality<
 
         container
             .bind<Factory<ILogger>>('ILoggerFactory')
-            .toFactory<ILogger, [string]>((context) => {
+            .toFactory<ILogger, [ILoggerConfiguration]>((context) => {
                 const logger = context.container
                     .get<ILogger>('IMainLogger')
                     .get();
-                return (name: string) => {
+                return (configuration: ILoggerConfiguration) => {
                     const childLogger =
                         context.container.get<ILogger>('ILogger');
-                    childLogger.set(
-                        logger.child({ name }, this.getConfiguration())
-                    );
+                    childLogger.set(logger.child(configuration));
                     return childLogger;
                 };
             });
@@ -40,25 +42,23 @@ export class GranularLogger extends AbstractFunctionality<
             const PinoPretty = await import('pino-pretty');
             container.get<ILogger>('IMainLogger').set(
                 Pino(
+                    this.getConfiguration().pino,
                     PinoPretty({
                         colorize: true,
-                        ...this.getConfiguration(),
+                        ...this.getConfiguration()?.prettyOptions,
                     })
                 )
             );
         } catch {
             container
                 .get<ILogger>('IMainLogger')
-                .set(Pino(this.getConfiguration()));
+                .set(Pino(this.getConfiguration()?.pino));
         }
     }
 
-    async start(container: Container): Promise<void> {}
+    async start(): Promise<void> {}
 
-    onOverride(
-        overridables: IOverride<null, null>,
-        container: Container
-    ): void {
+    onOverride(): void {
         throw new Error('Nothing can be overriden in the logger');
     }
 }

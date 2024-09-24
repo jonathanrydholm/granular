@@ -7,6 +7,4 @@ export interface IRequestHandler {
         response: Response,
         endpoint: IEndpoint<unknown>
     ): Promise<void>;
-
-    setTraceId(traceId: string): void;
 }

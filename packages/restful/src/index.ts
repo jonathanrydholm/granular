@@ -7,8 +7,8 @@ import {
     AbstractFunctionality,
     Factory,
     IOverride,
+    Container,
 } from '@granular/application';
-import { Container } from 'inversify';
 import {
     IRequestExceptionHandler,
     IRequestHandler,
@@ -59,13 +59,11 @@ export class GranularRestful extends AbstractFunctionality<
 
         container
             .bind<Factory<IRequestHandler>>('IRequestHandlerFactory')
-            .toFactory<IRequestHandler, [string]>((context) => {
-                return (traceId: string) => {
-                    const handler = context.container.get<IRequestHandler>(
+            .toFactory<IRequestHandler, []>((context) => {
+                return () => {
+                    return context.container.get<IRequestHandler>(
                         RestfulIdentifiers.REQUEST_HANDLER
                     );
-                    handler.setTraceId(traceId);
-                    return handler;
                 };
             });
     }

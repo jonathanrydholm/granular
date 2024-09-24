@@ -1,3 +1,4 @@
 import { ILogger } from './ILogger';
+import { ILoggerConfiguration } from './ILoggerConfiguration';
 
-export type ILoggerFactory = (name: string) => ILogger;
+export type ILoggerFactory = (configuration: ILoggerConfiguration) => ILogger;
