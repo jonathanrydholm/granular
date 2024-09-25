@@ -1,40 +1,47 @@
 import {
-    AbstractFunctionality,
     Container,
-    IOverride,
+    IFunctionality,
+    ILogicExtension,
 } from '@granular/application';
-import { IWatchManager, Overridables, WatcherIdentifiers } from './Types';
-import { WatchManager } from './Implementation';
-
-export class GranularWatcher extends AbstractFunctionality<
+import {
+    IWatcher,
+    IWatchManager,
     Overridables,
     WatcherIdentifiers,
-    null
-> {
-    register(container: Container): Promise<void> | void {
+} from './Types';
+import { WatchManager } from './Implementation';
+import { injectable } from 'inversify';
+
+@injectable()
+export class GranularWatcher
+    implements IFunctionality<Overridables, WatcherIdentifiers>
+{
+    onLogicExtensions(
+        extensions: ILogicExtension<IWatcher, WatcherIdentifiers, never>[],
+        container: Container
+    ): void {
+        extensions.forEach((extension) => {
+            if (extension.identifier === WatcherIdentifiers.WATCHER) {
+                extension.definitions.forEach((definition) => {
+                    container
+                        .bind(extension.identifier)
+                        .to(definition)
+                        .inSingletonScope();
+                });
+            }
+        });
+    }
+
+    onConfigure(configuration: never): void {}
+
+    bindInternals(container: Container): void {
         container
             .bind<IWatchManager>('IWatchManager')
             .to(WatchManager)
             .inSingletonScope();
     }
 
-    configure(container: Container): Promise<void> | void {}
-
     async start(container: Container): Promise<void> {
         await container.get<IWatchManager>('IWatchManager').start();
-    }
-
-    onOverride(
-        overridables: IOverride<Overridables, WatcherIdentifiers>,
-        container: Container
-    ): void {
-        if (overridables.identifier === WatcherIdentifiers.WATCHER) {
-            overridables.logic.forEach((service) => {
-                container
-                    .bind(overridables.identifier)
-                    .to(service)
-                    .inSingletonScope();
-            });
-        }
     }
 }

@@ -24,16 +24,22 @@ export class WatchManager implements IWatchManager {
     async start() {
         this.watchers.forEach((watcher) => {
             this.logger.get().info(`Creating watcher for ${watcher.glob()}`);
+
+            const usePolling = watcher.usePolling
+                ? watcher.usePolling()
+                : undefined;
+
             const instance = watch(watcher.glob(), {
+                ignored: watcher.ignore ? watcher.ignore() : undefined,
                 persistent: watcher.persistent
                     ? watcher.persistent()
                     : undefined,
                 followSymlinks: watcher.followSymlinks
                     ? watcher.followSymlinks()
                     : undefined,
-                usePolling: watcher.usePolling
-                    ? watcher.usePolling()
-                    : undefined,
+                usePolling: usePolling !== undefined,
+                interval: usePolling?.interval,
+                binaryInterval: usePolling?.binaryInterval,
             });
             instance.on('ready', () => {
                 this.logger.get().info(`Watching ${watcher.glob()}`);

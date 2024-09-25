@@ -16,9 +16,5 @@ export type Factory<
     V extends unknown[] = unknown[],
 > = inversifyInterfaces.Factory<T, U, V>;
 
-export * from './Application';
-export * from './IFunctionality';
-export * from './AbstractFunctionality';
-export * from './IFunctionalityDefinition';
-export * from './IOverride';
-export * from './Container';
+export * from './Types';
+export * from './Implementation';

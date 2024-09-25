@@ -9,6 +9,11 @@
         "build": "tsc -b"
     },
     "dependencies": {
-        "inversify": "6.0.2"
+        "@granular/logger": "1.0.0",
+        "inversify": "6.0.2",
+        "uuid": "10.0.0"
+    },
+    "devDependencies": {
+        "@types/uuid": "10.0.0"
     }
 }

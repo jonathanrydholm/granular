@@ -4,10 +4,11 @@ export * from './Types';
 export * from './Decorators';
 
 import {
-    AbstractFunctionality,
     Factory,
-    IOverride,
     Container,
+    IFunctionality,
+    ILogicExtension,
+    injectable,
 } from '@granular/application';
 import {
     IRequestExceptionHandler,
@@ -26,12 +27,50 @@ import {
     ServerConfiguration,
 } from './Implementation';
 
-export class GranularRestful extends AbstractFunctionality<
-    Overridables,
-    RestfulIdentifiers,
-    { port?: number }
-> {
-    register(container: Container): void {
+@injectable()
+export class GranularRestful
+    implements
+        IFunctionality<Overridables, RestfulIdentifiers, { port?: number }>
+{
+    onLogicExtensions(
+        extensions: ILogicExtension<
+            Overridables,
+            RestfulIdentifiers,
+            { port?: number }
+        >[],
+        container: Container
+    ): void {
+        extensions.forEach(({ definitions, identifier }) => {
+            if (identifier === RestfulIdentifiers.ENDPOINT) {
+                definitions.forEach((definition) => {
+                    container
+                        .bind(identifier)
+                        .to(definition)
+                        .inSingletonScope();
+                });
+            } else {
+                definitions.forEach((definition) => {
+                    container.rebind(identifier).to(definition);
+                });
+            }
+        });
+    }
+
+    onConfigure(
+        configuration: { port?: number },
+        container: Container
+    ): void | Promise<void> {
+        if (configuration?.port) {
+            container
+                .get<IServerConfiguration>(
+                    RestfulIdentifiers.SERVER_CONFIGURATION
+                )
+                .setPort(configuration.port);
+        }
+        container.get<IServer>(RestfulIdentifiers.SERVER).configure();
+    }
+
+    bindInternals(container: Container): void | Promise<void> {
         container
             .bind<IServer>(RestfulIdentifiers.SERVER)
             .to(Server)
@@ -68,37 +107,7 @@ export class GranularRestful extends AbstractFunctionality<
             });
     }
 
-    configure(container: Container): void {
-        const configuration = this.getConfiguration();
-        if (configuration?.port) {
-            container
-                .get<IServerConfiguration>(
-                    RestfulIdentifiers.SERVER_CONFIGURATION
-                )
-                .setPort(configuration.port);
-        }
-        container.get<IServer>(RestfulIdentifiers.SERVER).configure();
-    }
-
     async start(container: Container): Promise<void> {
         await container.get<IServer>(RestfulIdentifiers.SERVER).start();
-    }
-
-    onOverride(
-        overridables: IOverride<Overridables, RestfulIdentifiers>,
-        container: Container
-    ) {
-        if (overridables.identifier === RestfulIdentifiers.ENDPOINT) {
-            overridables.logic.forEach((service) => {
-                container
-                    .bind(overridables.identifier)
-                    .to(service)
-                    .inSingletonScope();
-            });
-        } else {
-            overridables.logic.forEach((service) => {
-                container.rebind(overridables.identifier).to(service);
-            });
-        }
     }
 }

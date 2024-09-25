@@ -1,11 +1,19 @@
-import { Application, inject, injectable } from '@granular/application';
+import {
+    System,
+    IApplication,
+    inject,
+    injectable,
+    WithFunctionality,
+} from '@granular/application';
 import { GranularLogger, ILogger, ILoggerFactory } from '@granular/logger';
 import {
     GranularWatcher,
+    Ignore,
     IWatchableEvent,
     IWatcher,
     Persistent,
     Triggers,
+    UsePolling,
     WatcherIdentifiers,
 } from '@granular/watcher';
 import { join } from 'path';
@@ -13,6 +21,8 @@ import { join } from 'path';
 @injectable()
 @Persistent(true)
 @Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
+@UsePolling({ binaryInterval: 5, interval: 1 })
+@Ignore((path) => path.includes('.txt'))
 class WatchReadMe implements IWatcher {
     private logger: ILogger;
 
@@ -29,21 +39,27 @@ class WatchReadMe implements IWatcher {
     }
 }
 
-new Application()
-    .addFunctionality({
-        Functionality: GranularLogger,
-        configuration: {
-            pino: { level: 'trace' },
-            identifier: 'Application',
-        },
-    })
-    .addFunctionality(
-        { Functionality: GranularWatcher },
+@injectable()
+@WithFunctionality({
+    functionality: GranularLogger,
+    configure: {
+        pino: { level: 'trace' },
+        identifier: 'Application',
+    },
+})
+@WithFunctionality({
+    functionality: GranularWatcher,
+    extend: [
         {
             identifier: WatcherIdentifiers.WATCHER,
-            logic: [WatchReadMe],
-        }
-    )
+            definitions: [WatchReadMe],
+        },
+    ],
+})
+class Application implements IApplication {}
+
+new System()
+    .withApplications([Application])
     .start()
     .then(() => {
         console.log('Application running');
