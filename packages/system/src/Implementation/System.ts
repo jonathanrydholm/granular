@@ -4,6 +4,7 @@ import {
     IClassDefinition,
     IInternalApplication,
     IUnknownFunctionality,
+    IUnknownLogicExtension,
 } from '../Types';
 import { v4 as uuidv4 } from 'uuid';
 import { GranularLogger, ILoggerFactory } from '@granular/logger';
@@ -37,17 +38,14 @@ export class System {
     async start() {
         const logger = new GranularLogger();
         logger.bindInternals(this.container);
-        await logger.onConfigure({ identifier: 'System' }, this.container);
+        await logger.onConfigure(
+            { identifier: 'System', pino: { level: 'trace' } },
+            this.container
+        );
         const systemLogger = this.container.get<ILoggerFactory>(
             'ILoggerFactory'
         )({ name: 'System' });
-        const applications = this.container
-            .getAll<IInternalApplication>('IApplication')
-            .sort(
-                (a, b) =>
-                    (b._granular_application_priority || 0) -
-                    (a._granular_application_priority || 0)
-            );
+        const applications = this.getPrioritizedApplications();
         for (const application of applications) {
             systemLogger
                 .get()
@@ -64,23 +62,26 @@ export class System {
                 for (const granularFunctionality of application._granular_functionalities) {
                     const { functionality, configure, extend } =
                         granularFunctionality;
-                    const functionalityName = `IFunctionality_${uuidv4()}`;
-                    container
-                        .bind<IUnknownFunctionality>(functionalityName)
-                        .to(functionality)
-                        .inSingletonScope();
-                    const instance =
-                        container.get<IUnknownFunctionality>(functionalityName);
 
-                    await instance.bindInternals(container);
+                    const { instance, identifier } =
+                        this.bindAndReturnFunctionality(
+                            container,
+                            functionality
+                        );
 
-                    if (extend) {
-                        instance.onLogicExtensions(extend, container);
-                    }
+                    systemLogger
+                        .get()
+                        .trace(
+                            `Bound functionality ${identifier} to ${application._granular_application_identifier || 'Unknown application'}`
+                        );
 
-                    if (configure) {
-                        await instance.onConfigure(configure, container);
-                    }
+                    await this.handleFunctionalityLifecycle(
+                        container,
+                        instance,
+                        extend,
+                        configure
+                    );
+
                     instances.push(instance);
                 }
 
@@ -88,6 +89,49 @@ export class System {
                     await instance.start(container);
                 }
             }
+        }
+    }
+
+    private getPrioritizedApplications(): IInternalApplication[] {
+        return this.container
+            .getAll<IInternalApplication>('IApplication')
+            .sort(
+                (a, b) =>
+                    (b._granular_application_priority || 0) -
+                    (a._granular_application_priority || 0)
+            );
+    }
+
+    private bindAndReturnFunctionality(
+        container: Container,
+        definition: IClassDefinition<IUnknownFunctionality>
+    ): { instance: IUnknownFunctionality; identifier: string } {
+        const identifier =
+            typeof definition === 'function' ? definition.name : uuidv4();
+        container
+            .bind<IUnknownFunctionality>(identifier)
+            .to(definition)
+            .inSingletonScope();
+        return {
+            instance: container.get<IUnknownFunctionality>(identifier),
+            identifier,
+        };
+    }
+
+    private async handleFunctionalityLifecycle(
+        container: Container,
+        functionality: IUnknownFunctionality,
+        extend?: IUnknownLogicExtension[],
+        configure?: unknown
+    ) {
+        await functionality.bindInternals(container);
+
+        if (extend) {
+            functionality.onLogicExtensions(extend, container);
+        }
+
+        if (configure) {
+            await functionality.onConfigure(configure, container);
         }
     }
 }
