@@ -4,27 +4,21 @@ import {
     inject,
     injectable,
     WithFunctionality,
+    WithStartupPriority,
+    WithIdentifier,
 } from '@granular/application';
-import { ILogger, ILoggerFactory } from '@granular/logger';
+import { GranularLogger, ILogger, ILoggerFactory } from '@granular/logger';
 import {
-    FollowSymlinks,
     GranularWatcher,
-    Ignore,
     IWatchableEvent,
     IWatcher,
-    Persistent,
     Triggers,
-    UsePolling,
     WatcherIdentifiers,
 } from '@granular/watcher';
 import { join } from 'path';
 
 @injectable()
-@Persistent(true)
 @Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
-@UsePolling({ binaryInterval: 5, interval: 1 })
-@Ignore((path) => path.includes('.txt'))
-@FollowSymlinks(() => true)
 class WatchReadMe implements IWatcher {
     private logger: ILogger;
 
@@ -42,6 +36,24 @@ class WatchReadMe implements IWatcher {
 }
 
 @injectable()
+@Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
+class WatchOtherFile implements IWatcher {
+    private logger: ILogger;
+
+    constructor(@inject('ILoggerFactory') loggerFactory: ILoggerFactory) {
+        this.logger = loggerFactory({ name: 'WatchOtherFile' });
+    }
+
+    glob(): string {
+        return join(__dirname, '../', '../', '../', 'otherfile');
+    }
+
+    handle(event: IWatchableEvent, path: string): Promise<void> | void {
+        this.logger.get().info(`${path} - ${event}`);
+    }
+}
+
+@injectable()
 @WithFunctionality({
     functionality: GranularWatcher,
     extend: [
@@ -51,10 +63,26 @@ class WatchReadMe implements IWatcher {
         },
     ],
 })
-class Application implements IApplication {}
+@WithStartupPriority(0)
+@WithIdentifier('A')
+class ApplicationA implements IApplication {}
+
+@injectable()
+@WithFunctionality({
+    functionality: GranularWatcher,
+    extend: [
+        {
+            identifier: WatcherIdentifiers.WATCHER,
+            definitions: [WatchOtherFile],
+        },
+    ],
+})
+@WithStartupPriority(1)
+@WithIdentifier('B')
+class ApplicationB implements IApplication {}
 
 new System()
-    .withApplications([Application])
+    .withApplications([ApplicationA, ApplicationB])
     .start()
     .then(() => {
         console.log('Application running');

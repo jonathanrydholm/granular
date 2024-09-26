@@ -10,6 +10,12 @@ const getEntryPoint = () => {
         case 'restful': {
             return './src/restful/index.ts';
         }
+        case 'startup_order': {
+            return './src/startup_order/index.ts';
+        }
+        case 'logger': {
+            return './src/logger/index.ts';
+        }
         default: {
             return './src/index.ts';
         }

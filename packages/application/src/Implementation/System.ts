@@ -38,9 +38,22 @@ export class System {
         const logger = new GranularLogger();
         logger.bindInternals(this.container);
         await logger.onConfigure({ identifier: 'System' }, this.container);
-        const applications =
-            this.container.getAll<IInternalApplication>('IApplication');
+        const systemLogger = this.container.get<ILoggerFactory>(
+            'ILoggerFactory'
+        )({ name: 'System' });
+        const applications = this.container
+            .getAll<IInternalApplication>('IApplication')
+            .sort(
+                (a, b) =>
+                    (b._granular_application_priority || 0) -
+                    (a._granular_application_priority || 0)
+            );
         for (const application of applications) {
+            systemLogger
+                .get()
+                .info(
+                    `Starting application ${application._granular_application_identifier}`
+                );
             const container = new Container();
             container.parent = this.container;
             /*

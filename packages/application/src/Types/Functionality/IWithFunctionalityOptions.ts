@@ -1,6 +1,6 @@
-import { IClassDefinition } from './ClassDefinition';
+import { IClassDefinition } from '../ClassDefinition';
+import { ILogicExtension } from '../Logic';
 import { IFunctionality } from './IFunctionality';
-import { ILogicExtension } from './Logic';
 
 export interface IWithFunctionalityOptions<
     TClass,

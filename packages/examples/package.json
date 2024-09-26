@@ -9,7 +9,9 @@
     "scripts": {
         "dev": "node ./scripts/dev.js",
         "watcher-example": "EXAMPLE=watcher node ./scripts/dev.js",
-        "restful-example": "EXAMPLE=restful node ./scripts/dev.js"
+        "restful-example": "EXAMPLE=restful node ./scripts/dev.js",
+        "startup-order-example": "EXAMPLE=startup_order node ./scripts/dev.js",
+        "logger-example": "EXAMPLE=logger node ./scripts/dev.js"
     },
     "dependencies": {
         "@granular/watcher": "1.0.0",

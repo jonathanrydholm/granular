@@ -7,16 +7,8 @@ import {
 import { GranularRestful, RestfulIdentifiers } from '@granular/restful';
 import { GetUserEndpoint } from './GetUserEndpoint';
 import { GetPingEndpoint } from './GetPingEndpoint';
-import { GranularLogger } from '@granular/logger';
 
 @injectable()
-@WithFunctionality({
-    functionality: GranularLogger,
-    configure: {
-        pino: { level: 'trace' },
-        identifier: 'Application',
-    },
-})
 @WithFunctionality({
     functionality: GranularRestful,
     configure: { port: 5000 },
