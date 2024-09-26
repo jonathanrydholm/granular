@@ -5,7 +5,7 @@ import type {
     IGETRequest,
     IResponse,
 } from '../../Types';
-import { injectable } from '@granular/application';
+import { injectable } from '@granular/system';
 
 @injectable()
 export abstract class GETEndpoint

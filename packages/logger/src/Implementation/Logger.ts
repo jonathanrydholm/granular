@@ -1,4 +1,4 @@
-import { injectable } from '@granular/application';
+import { injectable } from '@granular/system';
 import type { Logger as PinoLogger } from 'pino';
 import { ILogger } from '../Types';
 

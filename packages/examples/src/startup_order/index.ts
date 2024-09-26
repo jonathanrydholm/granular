@@ -6,8 +6,8 @@ import {
     WithFunctionality,
     WithStartupPriority,
     WithIdentifier,
-} from '@granular/application';
-import { GranularLogger, ILogger, ILoggerFactory } from '@granular/logger';
+} from '@granular/system';
+import { ILogger, ILoggerFactory } from '@granular/logger';
 import {
     GranularWatcher,
     IWatchableEvent,
@@ -23,29 +23,11 @@ class WatchReadMe implements IWatcher {
     private logger: ILogger;
 
     constructor(@inject('ILoggerFactory') loggerFactory: ILoggerFactory) {
-        this.logger = loggerFactory({ name: 'WatchReadMe' });
+        this.logger = loggerFactory({ name: `WatchReadMe ${Math.random()}` });
     }
 
     glob(): string {
         return join(__dirname, '../', '../', '../', 'README.md');
-    }
-
-    handle(event: IWatchableEvent, path: string): Promise<void> | void {
-        this.logger.get().info(`${path} - ${event}`);
-    }
-}
-
-@injectable()
-@Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
-class WatchOtherFile implements IWatcher {
-    private logger: ILogger;
-
-    constructor(@inject('ILoggerFactory') loggerFactory: ILoggerFactory) {
-        this.logger = loggerFactory({ name: 'WatchOtherFile' });
-    }
-
-    glob(): string {
-        return join(__dirname, '../', '../', '../', 'otherfile');
     }
 
     handle(event: IWatchableEvent, path: string): Promise<void> | void {
@@ -73,7 +55,7 @@ class ApplicationA implements IApplication {}
     extend: [
         {
             identifier: WatcherIdentifiers.WATCHER,
-            definitions: [WatchOtherFile],
+            definitions: [WatchReadMe],
         },
     ],
 })

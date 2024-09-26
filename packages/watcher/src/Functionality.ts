@@ -1,8 +1,4 @@
-import {
-    Container,
-    IFunctionality,
-    ILogicExtension,
-} from '@granular/application';
+import { Container, IFunctionality, ILogicExtension } from '@granular/system';
 import {
     IWatcher,
     IWatchManager,

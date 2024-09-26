@@ -1,9 +1,4 @@
-import {
-    inject,
-    injectable,
-    multiInject,
-    optional,
-} from '@granular/application';
+import { inject, injectable, multiInject, optional } from '@granular/system';
 import { ILogger, ILoggerFactory } from '@granular/logger';
 import { IWatcher, IWatchManager, WatcherIdentifiers } from '../Types';
 import { watch } from 'chokidar';

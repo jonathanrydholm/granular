@@ -5,7 +5,7 @@ import {
     IPOSTRequest,
     IResponse,
 } from '../../Types';
-import { injectable } from '@granular/application';
+import { injectable } from '@granular/system';
 
 @injectable()
 export abstract class POSTEndpoint<TRequestBody>

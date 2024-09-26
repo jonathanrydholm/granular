@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@granular/logger": "1.0.0",
-        "@granular/application": "1.0.0",
+        "@granular/system": "1.0.0",
         "reflect-metadata": "0.2.2",
         "qs": "6.13.0",
         "express": "4.21.0",

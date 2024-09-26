@@ -3,7 +3,7 @@ import {
     Factory,
     IFunctionality,
     injectable,
-} from '@granular/application';
+} from '@granular/system';
 import Pino from 'pino';
 import {
     ILogger,

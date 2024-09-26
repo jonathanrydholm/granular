@@ -8,12 +8,7 @@ import {
     type IServer,
     type IServerConfiguration,
 } from '../../Types';
-import {
-    inject,
-    injectable,
-    multiInject,
-    optional,
-} from '@granular/application';
+import { inject, injectable, multiInject, optional } from '@granular/system';
 import { ILogger, ILoggerFactory } from '@granular/logger';
 
 @injectable()

@@ -7,6 +7,7 @@ export interface IFunctionality<TClass, TIdentifiers, TConfiguration = never> {
         extensions: ILogicExtension<TClass, TIdentifiers, TConfiguration>[],
         container: Container
     ): void;
+    /** Method for configuring the functionality */
     onConfigure(
         configuration: TConfiguration,
         container: Container

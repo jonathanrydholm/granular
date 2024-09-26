@@ -3,7 +3,7 @@ import {
     injectable,
     System,
     WithFunctionality,
-} from '@granular/application';
+} from '@granular/system';
 import { GranularRestful, RestfulIdentifiers } from '@granular/restful';
 import { GetUserEndpoint } from './GetUserEndpoint';
 import { GetPingEndpoint } from './GetPingEndpoint';

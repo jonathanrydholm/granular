@@ -1,4 +1,4 @@
-import { inject, injectable } from '@granular/application';
+import { inject, injectable } from '@granular/system';
 import type { Request, Response } from 'express';
 import {
     IEndpoint,

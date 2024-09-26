@@ -4,27 +4,19 @@ import {
     inject,
     injectable,
     WithFunctionality,
-} from '@granular/application';
+} from '@granular/system';
 import { ILogger, ILoggerFactory } from '@granular/logger';
 import {
-    FollowSymlinks,
     GranularWatcher,
-    Ignore,
     IWatchableEvent,
     IWatcher,
-    Persistent,
     Triggers,
-    UsePolling,
     WatcherIdentifiers,
 } from '@granular/watcher';
 import { join } from 'path';
 
 @injectable()
-@Persistent(true)
 @Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
-@UsePolling({ binaryInterval: 5, interval: 1 })
-@Ignore((path) => path.includes('.txt'))
-@FollowSymlinks(() => true)
 class WatchReadMe implements IWatcher {
     private logger: ILogger;
 

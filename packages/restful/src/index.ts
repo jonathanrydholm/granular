@@ -9,7 +9,7 @@ import {
     IFunctionality,
     ILogicExtension,
     injectable,
-} from '@granular/application';
+} from '@granular/system';
 import {
     IRequestExceptionHandler,
     IRequestHandler,

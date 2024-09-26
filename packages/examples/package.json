@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "@granular/watcher": "1.0.0",
-        "@granular/application": "1.0.0",
+        "@granular/system": "1.0.0",
         "@granular/restful": "1.0.0",
         "@granular/logger": "1.0.0"
     },

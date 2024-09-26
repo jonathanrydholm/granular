@@ -1,4 +1,4 @@
-import { injectable } from '@granular/application';
+import { injectable } from '@granular/system';
 import {
     GETEndpoint,
     IGETRequest,

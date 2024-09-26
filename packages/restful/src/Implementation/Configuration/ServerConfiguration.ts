@@ -1,6 +1,6 @@
 import type { Express } from 'express';
 import { IServerConfiguration } from '../../Types';
-import { injectable } from '@granular/application';
+import { injectable } from '@granular/system';
 
 @injectable()
 export class ServerConfiguration implements IServerConfiguration {

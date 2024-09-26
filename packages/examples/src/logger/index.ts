@@ -2,11 +2,10 @@ import {
     Container,
     IApplication,
     IFunctionality,
-    ILogicExtension,
     injectable,
     System,
     WithFunctionality,
-} from '@granular/application';
+} from '@granular/system';
 import { GranularLogger, ILoggerFactory } from '@granular/logger';
 
 @injectable()
@@ -21,7 +20,7 @@ class CustomFunctionality implements IFunctionality<null, null, null> {
                 'ILoggerFactory'
             )({ name: 'CustomFunctionality' })
             .get()
-            .info('Hello World!');
+            .info('Some log');
     }
 }
 

@@ -1,4 +1,4 @@
-import { injectable } from '@granular/application';
+import { injectable } from '@granular/system';
 import type { Response } from 'express';
 import { IResponse, IResponseHandler } from '../../Types';
 import { AbstractResponse } from '../Responses/AbstractResponse';
