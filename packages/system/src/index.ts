@@ -4,8 +4,10 @@ import {
     multiInject as inversifyMultiInject,
     optional as inversifyOptional,
     interfaces as inversifyInterfaces,
+    named as inversifyNamed,
 } from 'inversify';
 
+export const named = inversifyNamed;
 export const injectable = inversifyInjectable;
 export const inject = inversifyInject;
 export const multiInject = inversifyMultiInject;

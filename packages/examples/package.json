@@ -11,13 +11,16 @@
         "watcher-example": "EXAMPLE=watcher node ./scripts/dev.js",
         "restful-example": "EXAMPLE=restful node ./scripts/dev.js",
         "startup-order-example": "EXAMPLE=startup_order node ./scripts/dev.js",
-        "logger-example": "EXAMPLE=logger node ./scripts/dev.js"
+        "logger-example": "EXAMPLE=logger node ./scripts/dev.js",
+        "graphql-example": "EXAMPLE=graphql node ./scripts/dev.js"
     },
     "dependencies": {
         "@granular/watcher": "1.0.0",
         "@granular/system": "1.0.0",
         "@granular/restful": "1.0.0",
-        "@granular/logger": "1.0.0"
+        "@granular/logger": "1.0.0",
+        "@granular/http": "1.0.0",
+        "@granular/graphql": "1.0.0"
     },
     "devDependencies": {
         "nodemon-webpack-plugin": "4.8.2",

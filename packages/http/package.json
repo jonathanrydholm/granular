@@ -1,0 +1,16 @@
+{
+    "name": "@granular/http",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/index.ts",
+    "author": "",
+    "license": "ISC",
+    "scripts": {
+        "build": "tsc -b"
+    },
+    "dependencies": {
+        "@granular/logger": "1.0.0",
+        "@granular/system": "1.0.0",
+        "reflect-metadata": "0.2.2"
+    }
+}

@@ -16,6 +16,9 @@ const getEntryPoint = () => {
         case 'logger': {
             return './src/logger/index.ts';
         }
+        case 'graphql': {
+            return './src/graphql/index.ts';
+        }
         default: {
             return './src/index.ts';
         }
