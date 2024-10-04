@@ -4,7 +4,7 @@ import { IApplication, IClassDefinition } from '../../Types';
  *  than application B, then A will start first
  */
 export function WithStartupPriority(priority: number) {
-    return function (target: IClassDefinition<IApplication, unknown>) {
+    return function (target: IClassDefinition<IApplication>) {
         target.prototype._granular_application_priority = priority;
     };
 }

@@ -2,26 +2,44 @@ import { buildSchema, GraphQLSchema } from 'graphql';
 import {
     IGraphQLIdentifiers,
     IGraphQLSchemaManager,
+    IGraphQLTypeDescriptionResolver,
+    IUnknownGraphQLResolver,
     IUnknownGraphQLType,
 } from '../Types';
 import { injectable, multiInject, optional } from '@granular/system';
-import { IUnknownGraphQLResolver } from '../Types/IGraphQLResolver';
+import { IUnknownInternalGraphQLResolver } from '../InternalTypes';
 
 @injectable()
 export class GraphQLSchemaManager implements IGraphQLSchemaManager {
     private schema: GraphQLSchema;
+    private typeResolvers: Record<
+        string,
+        Record<string, IUnknownGraphQLResolver>
+    >;
 
     constructor(
-        @multiInject(`${IGraphQLIdentifiers.QUERY_RESOLVER}_internal`)
+        @multiInject(IGraphQLIdentifiers.QUERY_RESOLVER)
         @optional()
-        private queryResolvers: IUnknownGraphQLResolver[],
-        @multiInject(`${IGraphQLIdentifiers.INPUT_TYPE}_internal`)
+        private queryResolvers: IUnknownInternalGraphQLResolver[],
+        @multiInject(IGraphQLIdentifiers.INPUT_TYPE)
         @optional()
         private inputTypes: IUnknownGraphQLType[],
-        @multiInject(`${IGraphQLIdentifiers.OUTPUT_TYPE}_internal`)
+        @multiInject(IGraphQLIdentifiers.OUTPUT_TYPE)
         @optional()
-        private outputTypes: IUnknownGraphQLType[]
-    ) {}
+        private outputTypes: IUnknownGraphQLType[],
+        @multiInject(IGraphQLIdentifiers.MUTATION_RESOLVER)
+        @optional()
+        private mutationResolvers: IUnknownInternalGraphQLResolver[]
+    ) {
+        this.typeResolvers = {};
+    }
+
+    getTypeResolvers(): Record<
+        string,
+        Record<string, IUnknownGraphQLResolver>
+    > {
+        return this.typeResolvers;
+    }
 
     build(): void {
         const inputTypes = this.inputTypes
@@ -95,6 +113,32 @@ export class GraphQLSchemaManager implements IGraphQLSchemaManager {
                                              return `${property}: [${type.name}]`;
                                          }
                                          return `${property}: ${type.name}`;
+                                     } else if (typeof type === 'object') {
+                                         const resolverType =
+                                             type as IGraphQLTypeDescriptionResolver;
+                                         if (resolverType.resolver) {
+                                             if (
+                                                 typeof resolverType.type ===
+                                                 'function'
+                                             ) {
+                                                 if (
+                                                     !this.typeResolvers[
+                                                         outputType.constructor
+                                                             .name
+                                                     ]
+                                                 ) {
+                                                     this.typeResolvers[
+                                                         outputType.constructor.name
+                                                     ] = {
+                                                         [property]:
+                                                             resolverType.resolver,
+                                                     };
+                                                 }
+                                                 return `${property}: ${resolverType.type.name}`;
+                                             } else {
+                                                 return `${property}: ${type}`;
+                                             }
+                                         }
                                      }
                                      return `${property}: ${type}`;
                                  })
@@ -121,12 +165,42 @@ export class GraphQLSchemaManager implements IGraphQLSchemaManager {
             })
             .join('\n');
 
+        const mutations = this.mutationResolvers
+            .map((resolver) => {
+                const inputType = resolver.getInputType
+                    ? resolver.getInputType()
+                    : null;
+                const outputType = resolver.getOutputType();
+                const input = inputType
+                    ? `(input: ${typeof inputType === 'function' ? inputType.name : inputType})`
+                    : '';
+                return `
+                    ${resolver.constructor.name}${input}: ${typeof outputType === 'function' ? outputType.name : outputType}
+                `;
+            })
+            .join('\n');
+
         const schema = `
             ${inputTypes}
             ${outputTypes}
-            type Query {
-                ${queries}
-                Ping: Boolean
+            ${
+                queries
+                    ? `
+                type Query {
+                    ${queries}
+                }
+            `
+                    : ''
+            }
+
+            ${
+                mutations
+                    ? `
+                type Mutation {
+                    ${mutations}
+                }
+            `
+                    : ''
             }
         `;
 

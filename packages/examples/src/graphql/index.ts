@@ -9,6 +9,7 @@ import { GranularGraphql, IGraphQLIdentifiers } from '@granular/graphql';
 import { AddressType, UserType } from './UserType';
 import { User } from './UserResolver';
 import { UserQueryInput } from './UserQueryInput';
+import { GraphQLContext } from './Context';
 
 @injectable()
 @WithFunctionality({
@@ -17,6 +18,7 @@ import { UserQueryInput } from './UserQueryInput';
 })
 @WithFunctionality({
     functionality: GranularGraphql,
+
     extend: [
         {
             identifier: IGraphQLIdentifiers.QUERY_RESOLVER,
@@ -29,6 +31,10 @@ import { UserQueryInput } from './UserQueryInput';
         {
             identifier: IGraphQLIdentifiers.INPUT_TYPE,
             definitions: [UserQueryInput],
+        },
+        {
+            identifier: IGraphQLIdentifiers.CONTEXT,
+            definitions: [GraphQLContext],
         },
     ],
 })

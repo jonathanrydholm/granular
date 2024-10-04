@@ -1,5 +1,4 @@
 import { UnknownClassDefinition } from '@granular/system';
-import { IGraphQLType } from './OutputTypes';
 
 export interface IGraphQLResolver<
     TOutputType,
@@ -7,8 +6,6 @@ export interface IGraphQLResolver<
     TContext = never,
     TParent = never,
 > {
-    getOutputType(): UnknownClassDefinition | string;
-    getInputType?(): UnknownClassDefinition | string;
     handle(
         parent: TParent,
         input: TInputType,
