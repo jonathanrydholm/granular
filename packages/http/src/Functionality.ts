@@ -1,4 +1,5 @@
-import { Container, IFunctionality, ILogicExtension } from '@granular/system';
+import { IFunctionality, ILogicExtension } from '@granular/functionality';
+import { Container } from '@granular/system';
 import {
     HttpServerIdentifiers,
     IHttpServer,
@@ -22,8 +23,7 @@ export class GranularHttpServer
     onLogicExtensions(
         extensions: ILogicExtension<
             IHttpServerOverridables,
-            HttpServerIdentifiers,
-            IHttpServerConfiguration
+            HttpServerIdentifiers
         >[],
         container: Container
     ): void {

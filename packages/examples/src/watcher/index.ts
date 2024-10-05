@@ -14,6 +14,7 @@ import {
     WatcherIdentifiers,
 } from '@granular/watcher';
 import { join } from 'path';
+import { PinoLogger } from '@granular/logger-pino';
 
 @injectable()
 @Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
@@ -29,7 +30,7 @@ class WatchReadMe implements IWatcher {
     }
 
     handle(event: IWatchableEvent, path: string): Promise<void> | void {
-        this.logger.get().info(`${path} - ${event}`);
+        this.logger.info(`${path} - ${event}`);
     }
 }
 
@@ -47,7 +48,7 @@ class Application implements IApplication {}
 
 new System()
     .withApplications([Application])
-    .start()
+    .start(PinoLogger)
     .then(() => {
         console.log('Application running');
     });

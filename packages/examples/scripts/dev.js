@@ -13,9 +13,6 @@ const getEntryPoint = () => {
         case 'startup_order': {
             return './src/startup_order/index.ts';
         }
-        case 'logger': {
-            return './src/logger/index.ts';
-        }
         case 'graphql': {
             return './src/graphql/index.ts';
         }

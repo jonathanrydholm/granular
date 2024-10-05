@@ -1,0 +1,18 @@
+{
+    "name": "@granular/system",
+    "version": "0.0.1",
+    "description": "",
+    "main": "./src/index.ts",
+    "author": "",
+    "license": "ISC",
+    "scripts": {
+        "build": "tsc -b"
+    },
+    "dependencies": {
+        "uuid": "10.0.0",
+        "@granular/functionality": "^0.0.1",
+        "@granular/injection": "^0.0.1",
+        "@granular/logger": "^0.0.1",
+        "reflect-metadata": "0.2.2"
+    }
+}

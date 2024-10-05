@@ -57,7 +57,7 @@ export class HttpServer implements IHttpServer {
     }
 
     start({ port }: IHttpServerConfiguration): Promise<void> {
-        this.logger.get().info('Starting http server');
+        this.logger.info('Starting http server');
         return new Promise<void>((resolve, reject) => {
             this.server.listen({ port }, (err) => {
                 if (err) {

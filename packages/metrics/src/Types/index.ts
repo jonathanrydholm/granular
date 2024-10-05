@@ -3,6 +3,7 @@ export interface IMetricService {
         metricName: string,
         metricDescription: string
     ): INumericMetric;
+    start(): void;
 }
 
 export interface INumericMetric {

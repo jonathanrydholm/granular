@@ -1,6 +1,6 @@
 {
     "name": "@granular/examples",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -11,16 +11,15 @@
         "watcher-example": "EXAMPLE=watcher node ./scripts/dev.js",
         "restful-example": "EXAMPLE=restful node ./scripts/dev.js",
         "startup-order-example": "EXAMPLE=startup_order node ./scripts/dev.js",
-        "logger-example": "EXAMPLE=logger node ./scripts/dev.js",
         "graphql-example": "EXAMPLE=graphql node ./scripts/dev.js"
     },
     "dependencies": {
-        "@granular/watcher": "1.0.0",
-        "@granular/system": "1.0.0",
-        "@granular/restful": "1.0.0",
-        "@granular/logger": "1.0.0",
-        "@granular/http": "1.0.0",
-        "@granular/graphql": "1.0.0"
+        "@granular/watcher": "^0.0.1",
+        "@granular/system": "^0.0.1",
+        "@granular/logger": "^0.0.1",
+        "@granular/logger-pino": "^0.0.1",
+        "@granular/http": "^0.0.1",
+        "@granular/graphql": "^0.0.1"
     },
     "devDependencies": {
         "nodemon-webpack-plugin": "4.8.2",

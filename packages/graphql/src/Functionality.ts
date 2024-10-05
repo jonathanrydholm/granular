@@ -1,9 +1,5 @@
-import {
-    Container,
-    Factory,
-    IFunctionality,
-    ILogicExtension,
-} from '@granular/system';
+import { Container, Factory } from '@granular/system';
+import { IFunctionality, ILogicExtension } from '@granular/functionality';
 import { injectable } from 'inversify';
 import {
     IApollo,
@@ -29,11 +25,7 @@ export class GranularGraphql
     implements IFunctionality<IGraphQLOverrides, IGraphQLIdentifiers>
 {
     onLogicExtensions(
-        extensions: ILogicExtension<
-            IGraphQLOverrides,
-            IGraphQLIdentifiers,
-            never
-        >[],
+        extensions: ILogicExtension<IGraphQLOverrides, IGraphQLIdentifiers>[],
         container: Container
     ): void {
         extensions.forEach((extension) => {

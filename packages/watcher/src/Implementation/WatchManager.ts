@@ -18,7 +18,7 @@ export class WatchManager implements IWatchManager {
 
     async start() {
         this.watchers.forEach((watcher) => {
-            this.logger.get().info(`Creating watcher for ${watcher.glob()}`);
+            this.logger.info(`Creating watcher for ${watcher.glob()}`);
 
             const usePolling = watcher.usePolling
                 ? watcher.usePolling()
@@ -37,7 +37,7 @@ export class WatchManager implements IWatchManager {
                 binaryInterval: usePolling?.binaryInterval,
             });
             instance.on('ready', () => {
-                this.logger.get().info(`Watching ${watcher.glob()}`);
+                this.logger.info(`Watching ${watcher.glob()}`);
                 if (watcher.triggers) {
                     watcher.triggers().forEach((trigger) => {
                         instance.on(trigger, (path: string) => {
@@ -45,18 +45,16 @@ export class WatchManager implements IWatchManager {
                         });
                     });
                 } else {
-                    this.logger
-                        .get()
-                        .warn(`No triggers defined for ${watcher.glob()}`);
+                    this.logger.warn(
+                        `No triggers defined for ${watcher.glob()}`
+                    );
                 }
             });
             instance.on('error', (error) => {
-                this.logger
-                    .get()
-                    .error(
-                        `Received error while watching ${watcher.glob()}`,
-                        error
-                    );
+                this.logger.error(
+                    `Received error while watching ${watcher.glob()}`,
+                    error
+                );
             });
         });
     }

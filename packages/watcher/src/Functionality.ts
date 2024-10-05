@@ -1,4 +1,5 @@
-import { Container, IFunctionality, ILogicExtension } from '@granular/system';
+import { IFunctionality, ILogicExtension } from '@granular/functionality';
+import { Container } from '@granular/system';
 import {
     IWatcher,
     IWatchManager,
@@ -13,7 +14,7 @@ export class GranularWatcher
     implements IFunctionality<Overridables, WatcherIdentifiers>
 {
     onLogicExtensions(
-        extensions: ILogicExtension<IWatcher, WatcherIdentifiers, never>[],
+        extensions: ILogicExtension<IWatcher, WatcherIdentifiers>[],
         container: Container
     ): void {
         extensions.forEach((extension) => {

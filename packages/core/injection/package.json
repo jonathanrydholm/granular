@@ -1,0 +1,14 @@
+{
+    "name": "@granular/injection",
+    "version": "0.0.1",
+    "description": "",
+    "main": "./src/index.ts",
+    "author": "",
+    "license": "ISC",
+    "scripts": {
+        "build": "tsc -b"
+    },
+    "dependencies": {
+        "inversify": "^6.0.0"
+    }
+}
