@@ -34,12 +34,9 @@ export class System {
     }
 
     /** Starts the system */
-    async start(loggerOverride?: IClassDefinition<ILogger>) {
+    async start() {
         const logger = new GranularLogger();
         logger.bindInternals(this.container);
-        if (loggerOverride) {
-            this.container.rebind<ILogger>('ILogger').to(loggerOverride);
-        }
         const systemLogger = this.container.get<ILoggerFactory>(
             'ILoggerFactory'
         )({ name: 'System' });
@@ -119,6 +116,9 @@ export class System {
         configure?: unknown
     ) {
         await functionality.bindInternals(container);
+        if (functionality.postBindInternals) {
+            await functionality.postBindInternals(container);
+        }
 
         if (extend) {
             functionality.onLogicExtensions(extend, container);

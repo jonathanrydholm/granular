@@ -3,12 +3,19 @@ const { readFileSync, writeFileSync, rmdir, rm } = require('fs');
 const { join } = require('path');
 
 const package = process.argv[2];
+const subfolder = process.argv[3];
 
 if (!package) {
     throw new Error('Cannot publish undefined package');
 }
 
-const packageJsonPath = join(__dirname, 'packages', package, 'package.json');
+const packageLocation = join(
+    __dirname,
+    'packages',
+    ...(subfolder ? [subfolder, package] : [package])
+);
+
+const packageJsonPath = join(packageLocation, 'package.json');
 const raw = readFileSync(packageJsonPath, { encoding: 'utf-8' });
 const packageJson = JSON.parse(raw);
 packageJson.main = './dist/index.js';
@@ -25,6 +32,7 @@ try {
     console.log('WRITING PACKAGE_JSON');
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4) + '\n');
     console.log('PUBLISHING');
+    execSync(`yarn workspace @granular/${package} publish --access public`);
 } catch (e) {
     console.log('ERROR', e);
 } finally {
@@ -34,7 +42,7 @@ try {
         JSON.stringify(JSON.parse(raw), null, 4) + '\n'
     );
     rm(
-        join(__dirname, 'packages', package, 'dist'),
+        join(packageLocation, 'dist'),
         {
             recursive: true,
             force: true,
@@ -42,7 +50,7 @@ try {
         () => {}
     );
     rm(
-        join(__dirname, 'packages', package, 'tsconfig.tsbuildinfo'),
+        join(packageLocation, 'tsconfig.tsbuildinfo'),
         { force: true },
         () => {}
     );

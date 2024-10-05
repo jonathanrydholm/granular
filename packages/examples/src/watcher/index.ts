@@ -14,7 +14,7 @@ import {
     WatcherIdentifiers,
 } from '@granular/watcher';
 import { join } from 'path';
-import { PinoLogger } from '@granular/logger-pino';
+import { GranularPinoLogger } from '@granular/logger-pino';
 
 @injectable()
 @Triggers(['change', 'add', 'addDir', 'unlink', 'unlinkDir'])
@@ -44,11 +44,14 @@ class WatchReadMe implements IWatcher {
         },
     ],
 })
+@WithFunctionality({
+    functionality: GranularPinoLogger,
+})
 class Application implements IApplication {}
 
 new System()
     .withApplications([Application])
-    .start(PinoLogger)
+    .start()
     .then(() => {
         console.log('Application running');
     });

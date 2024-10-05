@@ -14,5 +14,6 @@ export interface IFunctionality<TClass, TIdentifiers, TConfiguration = never> {
     ): void | Promise<void>;
     /** Lifecycle method for binding internal logic needed for this functionality. */
     bindInternals(container: Container): void | Promise<void>;
+    postBindInternals?(container: Container): void | Promise<void>;
     start(container: Container): Promise<void>;
 }

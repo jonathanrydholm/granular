@@ -1,10 +1,15 @@
-import { injectable } from '@granular/injection';
-import { ILogger, ILoggerConfiguration } from '@granular/logger';
+import { IFunctionality } from '@granular/functionality';
+import { Container, injectable } from '@granular/injection';
+import {
+    GranularLogger,
+    ILogger,
+    ILoggerConfiguration,
+} from '@granular/logger';
 import pino from 'pino';
 import type { Logger } from 'pino';
 
 @injectable()
-export class PinoLogger implements ILogger {
+class PinoLogger implements ILogger {
     private logger: Logger;
 
     init(configuration: ILoggerConfiguration): void {
@@ -28,5 +33,14 @@ export class PinoLogger implements ILogger {
 
     error(msg: string): void {
         this.logger.error(msg);
+    }
+}
+
+export class GranularPinoLogger
+    extends GranularLogger
+    implements IFunctionality<ILogger, 'ILogger', ILoggerConfiguration>
+{
+    postBindInternals(container: Container): void | Promise<void> {
+        container.rebind<ILogger>('ILogger').to(PinoLogger);
     }
 }
