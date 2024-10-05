@@ -8,7 +8,7 @@ import {
 export function WithFunctionality<TClass, TLogicIdentifier, TConfiguration>(
     options: IWithFunctionalityOptions<TClass, TLogicIdentifier, TConfiguration>
 ) {
-    return function (target: IClassDefinition<IApplication, TConfiguration>) {
+    return function (target: IClassDefinition<IApplication>) {
         if (!target.prototype._granular_functionalities) {
             target.prototype._granular_functionalities = [];
         }

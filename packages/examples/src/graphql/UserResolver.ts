@@ -1,18 +1,12 @@
-import { IGraphQLResolver } from '@granular/graphql/src/Types/IGraphQLResolver';
-import { injectable, UnknownClassDefinition } from '@granular/system';
+import { injectable } from '@granular/system';
 import { IUserType, UserType } from './UserType';
 import { IUserQueryInput, UserQueryInput } from './UserQueryInput';
+import { IGraphQLResolver, InputType, OutputType } from '@granular/graphql';
 
 @injectable()
+@InputType(UserQueryInput)
+@OutputType(UserType)
 export class User implements IGraphQLResolver<IUserType, IUserQueryInput> {
-    getOutputType(): UnknownClassDefinition | string {
-        return UserType;
-    }
-
-    getInputType?(): UnknownClassDefinition | string {
-        return UserQueryInput;
-    }
-
     async handle(
         parent: never,
         input: IUserQueryInput,

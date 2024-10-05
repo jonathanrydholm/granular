@@ -11,8 +11,7 @@ export interface IWithFunctionalityOptions<
     configure?: TConfiguration;
     /** Class definition of the functionality */
     functionality: IClassDefinition<
-        IFunctionality<TClass, TLogicIdentifier, TConfiguration>,
-        TConfiguration
+        IFunctionality<TClass, TLogicIdentifier, TConfiguration>
     >;
     /** Logic extensions of functionality */
     extend?: ILogicExtension<TClass, TLogicIdentifier, TConfiguration>[];

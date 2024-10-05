@@ -1,26 +1,22 @@
-import { IHttpRequestHandler } from '@granular/http';
+import {
+    FastifyReply,
+    FastifyRequest,
+    IHttpRequestHandler,
+} from '@granular/http';
 import { inject, injectable } from '@granular/system';
-import { IncomingMessage, ServerResponse } from 'http';
-import { IApollo } from '../Types';
+import { IApollo, IGraphQLContextFactory, IGraphQLIdentifiers } from '../Types';
 import { HeaderMap, HTTPGraphQLRequest } from '@apollo/server';
 import { parse } from 'url';
 
 @injectable()
-export class GraphqlRequestHandler implements IHttpRequestHandler {
-    constructor(@inject('IGraphQLApolloServer') private apollo: IApollo) {}
+export class GraphqlRequestHandler implements IHttpRequestHandler<string> {
+    constructor(
+        @inject('IGraphQLApolloServer') private apollo: IApollo,
+        @inject(`Factory<${IGraphQLIdentifiers.CONTEXT}>`)
+        private contextFactory: IGraphQLContextFactory
+    ) {}
 
-    async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
-        const rawBody = await new Promise<string>((resolve) => {
-            const bodyParts = [];
-            req.on('data', (chunk) => {
-                bodyParts.push(chunk);
-            }).on('end', () => {
-                resolve(Buffer.concat(bodyParts).toString());
-            });
-        });
-
-        const body = rawBody ? JSON.parse(rawBody) : undefined;
-
+    async handle(req: FastifyRequest, res: FastifyReply): Promise<string> {
         const headers = new HeaderMap();
         for (const [key, value] of Object.entries(req.headers)) {
             if (value !== undefined) {
@@ -35,35 +31,34 @@ export class GraphqlRequestHandler implements IHttpRequestHandler {
             method: req.method.toUpperCase(),
             headers,
             search: parse(req.url).search ?? '',
-            body,
+            body: req.body,
         };
 
         const httpGraphQLResponse = await this.apollo
             .getServer()
             .executeHTTPGraphQLRequest({
                 httpGraphQLRequest,
-                context: async () => ({}),
+                context: () => this.contextFactory(req, res),
             });
 
         for (const [key, value] of httpGraphQLResponse.headers) {
-            res.setHeader(key, value);
+            res.raw.setHeader(key, value);
         }
 
-        res.writeHead(httpGraphQLResponse.status || 200);
+        res.code(200);
 
         if (httpGraphQLResponse.body.kind === 'complete') {
-            res.write(httpGraphQLResponse.body.string);
-            res.end();
-            return;
+            return httpGraphQLResponse.body.string;
         }
 
+        let output = '';
         for await (const chunk of httpGraphQLResponse.body.asyncIterator) {
-            res.write(chunk);
+            output = output + chunk;
             if (typeof (res as any).flush === 'function') {
                 (res as any).flush();
             }
         }
-        res.end();
+        return output;
     }
 
     getPath(): string {

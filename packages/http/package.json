@@ -9,6 +9,7 @@
         "build": "tsc -b"
     },
     "dependencies": {
+        "fastify": "5.0.0",
         "@granular/logger": "1.0.0",
         "@granular/system": "1.0.0",
         "reflect-metadata": "0.2.2"

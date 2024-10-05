@@ -17,14 +17,12 @@ export class System {
     }
 
     /** Sets applications of this system */
-    withApplications(applications: IClassDefinition<IApplication, unknown>[]) {
+    withApplications(applications: IClassDefinition<IApplication>[]) {
         /*
             Cast applications to internal applications which contain metadata through decorators
         */
-        const internalApplications = applications as IClassDefinition<
-            IInternalApplication,
-            unknown
-        >[];
+        const internalApplications =
+            applications as IClassDefinition<IInternalApplication>[];
         internalApplications.forEach((application) => {
             this.container
                 .bind<IInternalApplication>('IApplication')
